@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 
 import pollRoutes from "./routes/Poll.js"
 import optionRoutes from "./routes/Option.js"
+import helmet from "helmet"
 
 const app: Express = express()
 const port = process.env.PORT
@@ -12,8 +13,8 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*")
-	// res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000")
+	// res.setHeader("Access-Control-Allow-Origin", "*")
+	res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app/")
 	res.setHeader(
 		"Access-Control-Allow-Methods",
 		"GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 	next()
 })
 
+app.use(helmet())
 app.use("/api", pollRoutes)
 app.use("/api", optionRoutes)
 
