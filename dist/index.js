@@ -8,8 +8,8 @@ var app = express();
 var port = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
+app.set("trust proxy", true);
 app.use(function (req, res, next) {
-    // res.setHeader("Access-Control-Allow-Origin", "*")
     res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app/");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
