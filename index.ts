@@ -10,10 +10,15 @@ import helmet from "helmet"
 const app: Express = express()
 const port = process.env.PORT
 
+app.set("trust proxy", true)
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors())
-app.set("trust proxy", true)
+app.use(helmet())
+app.use(
+	cors({
+		origin: ["https://quickpolls.vercel.app/"],
+	})
+)
 
 // app.use((req, res, next) => {
 // 	res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app/")
@@ -26,7 +31,6 @@ app.set("trust proxy", true)
 // 	next()
 // })
 
-app.use(helmet())
 app.use("/api", pollRoutes)
 app.use("/api", optionRoutes)
 
