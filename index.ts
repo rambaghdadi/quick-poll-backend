@@ -13,12 +13,12 @@ const port = process.env.PORT
 // app.set("trust proxy", true)
 app.use(express.json())
 app.use(cookieParser())
-app.use(helmet())
 app.use(
 	cors({
-		origin: ["https://quickpolls.vercel.app/"],
+		origin: ["https://quickpolls.vercel.app"],
 	})
 )
+app.use(helmet())
 
 // app.use((req, res, next) => {
 // 	res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app/")

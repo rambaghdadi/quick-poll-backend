@@ -10,7 +10,7 @@ router.post("/option", async (req: Request, res: Response) => {
 		console.log("x-real-ip", req.headers["x-real-ip"])
 		console.log("req.ip", req.ip)
 
-		const ip = req.headers["x-real-ip"]?.toString()!
+		const ip = req.ip
 		const numOfVotes = await prisma.pollOption.findFirst({
 			where: {
 				id: req.body.id,
