@@ -26,10 +26,14 @@ router.post("/option", async (req: Request, res: Response) => {
 			},
 			data: {
 				vote: numOfVotes.vote + 1,
-				voters: ip,
+				voters: {
+					push: [ip],
+				},
 				question: {
 					update: {
-						voters: ip,
+						voters: {
+							push: [ip],
+						},
 						totalVotes: numOfVotes.question.totalVotes + 1,
 					},
 				},

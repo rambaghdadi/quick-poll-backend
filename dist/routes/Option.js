@@ -66,10 +66,14 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                         },
                         data: {
                             vote: numOfVotes.vote + 1,
-                            voters: ip,
+                            voters: {
+                                push: [ip],
+                            },
                             question: {
                                 update: {
-                                    voters: ip,
+                                    voters: {
+                                        push: [ip],
+                                    },
                                     totalVotes: numOfVotes.question.totalVotes + 1,
                                 },
                             },
