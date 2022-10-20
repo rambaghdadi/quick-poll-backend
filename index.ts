@@ -13,7 +13,15 @@ const port = process.env.PORT
 // app.set("trust proxy", true)
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors())
+app.use(
+	cors({
+		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+		origin: true,
+		preflightContinue: true,
+		credentials: true,
+	})
+)
+
 // app.use((req, res, next) => {
 // 	res.setHeader("Access-Control-Allow-Origin", "*")
 // 	res.setHeader(
