@@ -6,7 +6,7 @@ import optionRoutes from "./routes/Option.js";
 import helmet from "helmet";
 var app = express();
 var port = process.env.PORT;
-// app.set("trust proxy", true)
+app.set("trust proxy", true);
 app.use(express.json());
 app.use(cookieParser());
 // app.use(
