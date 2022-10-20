@@ -42,7 +42,7 @@ router.post("/option", async (req: Request, res: Response) => {
 		res.status(200).json({ data: vote })
 	} catch (error) {
 		let err = error as Error
-		res.status(400).json({ error: err.toString() })
+		res.status(400).json({ error: err.message })
 	}
 })
 

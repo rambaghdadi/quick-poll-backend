@@ -19,7 +19,7 @@ router.get("/poll/:id", async (req: Request, res: Response) => {
 		res.status(200).json({ data: poll })
 	} catch (error) {
 		let err = error as Error
-		res.status(400).json({ error: err })
+		res.status(400).json({ error: err.message })
 	}
 })
 
@@ -38,7 +38,7 @@ router.post("/poll", async (req: Request, res: Response) => {
 		res.status(200).json({ data: poll })
 	} catch (error) {
 		let err = error as Error
-		res.status(400).json({ error: err })
+		res.status(400).json({ error: err.message })
 	}
 })
 

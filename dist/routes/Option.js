@@ -86,7 +86,7 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
             case 3:
                 error_1 = _a.sent();
                 err = error_1;
-                res.status(400).json({ error: err.toString() });
+                res.status(400).json({ error: err.message });
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
