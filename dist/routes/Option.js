@@ -40,15 +40,14 @@ var router = express.Router();
 var prisma = new PrismaClient({});
 router.post("/option", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var ip, numOfVotes, vote, error_1, err;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _b.trys.push([0, 3, , 4]);
+                _a.trys.push([0, 3, , 4]);
                 // Add New Vote
                 console.log("x-real-ip", req.headers["x-real-ip"]);
                 console.log("req.ip", req.ip);
-                ip = (_a = req.headers["x-real-ip"]) === null || _a === void 0 ? void 0 : _a.toString();
+                ip = req.ip;
                 return [4 /*yield*/, prisma.pollOption.findFirst({
                         where: {
                             id: req.body.id,
@@ -59,7 +58,7 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                         },
                     })];
             case 1:
-                numOfVotes = _b.sent();
+                numOfVotes = _a.sent();
                 if (!numOfVotes)
                     throw new Error("Choice not found.");
                 if (numOfVotes.question.voters.includes(ip))
@@ -80,11 +79,11 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                         },
                     })];
             case 2:
-                vote = _b.sent();
+                vote = _a.sent();
                 res.status(200).json({ data: vote });
                 return [3 /*break*/, 4];
             case 3:
-                error_1 = _b.sent();
+                error_1 = _a.sent();
                 err = error_1;
                 res.status(400).json({ error: err.toString() });
                 return [3 /*break*/, 4];
