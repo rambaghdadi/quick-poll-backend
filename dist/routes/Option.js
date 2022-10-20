@@ -46,9 +46,10 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                 _a.trys.push([0, 3, , 4]);
                 // Add New Vote
                 console.log("x-real-ip", req.headers["x-real-ip"]);
-                console.log("x-forwarded-for", req.headers["x-forwarded-for"]);
                 console.log("req.ip", req.ip);
+                console.log("x-forwarded-for", req.headers["x-forwarded-for"]);
                 console.log("req.ips", req.ips);
+                console.log("test");
                 ip = req.ip;
                 return [4 /*yield*/, prisma.pollOption.findFirst({
                         where: {
