@@ -9,16 +9,10 @@ var port = process.env.PORT;
 app.set("trust proxy", true);
 app.use(express.json());
 app.use(cookieParser());
-// app.use(
-// 	cors({
-// 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-// 		origin: true,
-// 		preflightContinue: true,
-// 		credentials: true,
-// 	})
-// )
+//https://quickpolls.vercel.app
+//http://localhost:3000
 app.use(function (req, res, next) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
     res.setHeader("Access-Control-Allow-Credentials", "true");

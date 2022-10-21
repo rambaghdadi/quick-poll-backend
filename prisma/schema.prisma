@@ -13,7 +13,7 @@ datasource db {
 model PollQuestion {
   id String @id @unique @default(cuid())
   createdAt DateTime @default(now())
-  endsAt DateTime?
+  endsAt DateTime
   question String 
   optionLimit Int?
   voters String[] 

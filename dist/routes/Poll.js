@@ -38,6 +38,7 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 var router = express.Router();
 var prisma = new PrismaClient({});
+// Get Poll
 router.get("/poll/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var pollId, poll, error_1, err;
     return __generator(this, function (_a) {
@@ -55,6 +56,8 @@ router.get("/poll/:id", function (req, res) { return __awaiter(void 0, void 0, v
                     })];
             case 1:
                 poll = _a.sent();
+                if ((poll === null || poll === void 0 ? void 0 : poll.endsAt) < new Date())
+                    throw new Error("Poll expired.");
                 if (!poll)
                     throw new Error("Poll not found.");
                 res.status(200).json({ data: poll });
@@ -68,6 +71,7 @@ router.get("/poll/:id", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
+// Create New Poll
 router.post("/poll", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var poll, error_2, err;
     return __generator(this, function (_a) {
@@ -79,6 +83,7 @@ router.post("/poll", function (req, res) { return __awaiter(void 0, void 0, void
                             question: req.body.question,
                             allowNewOptions: req.body.allowNewOptions,
                             optionLimit: req.body.optionLimit,
+                            endsAt: req.body.endsAt,
                             options: {
                                 create: req.body.options,
                             },

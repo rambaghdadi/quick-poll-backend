@@ -18,6 +18,8 @@ router.post("/option", async (req: Request, res: Response) => {
 			},
 		})
 		if (!numOfVotes) throw new Error("Choice not found.")
+		if (req.cookies[numOfVotes.question.id] === "true")
+			throw new Error("You have already voted in this poll.")
 		if (numOfVotes.question.voters.includes(ip))
 			throw new Error("You have already voted in this poll.")
 		const vote = await prisma.pollOption.update({
@@ -39,7 +41,12 @@ router.post("/option", async (req: Request, res: Response) => {
 				},
 			},
 		})
-		res.status(200).json({ data: vote })
+		res
+			.status(200)
+			.cookie(numOfVotes.question.id, true, {
+				httpOnly: true,
+			})
+			.json({ data: vote })
 	} catch (error) {
 		let err = error as Error
 		res.status(400).json({ error: err.message })

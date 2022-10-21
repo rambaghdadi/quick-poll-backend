@@ -1,7 +1,6 @@
 import "dotenv/config"
 import express, { Express } from "express"
 import cookieParser from "cookie-parser"
-import cors from "cors"
 
 import pollRoutes from "./routes/Poll.js"
 import optionRoutes from "./routes/Option.js"
@@ -13,17 +12,12 @@ const port = process.env.PORT
 app.set("trust proxy", true)
 app.use(express.json())
 app.use(cookieParser())
-// app.use(
-// 	cors({
-// 		methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-// 		origin: true,
-// 		preflightContinue: true,
-// 		credentials: true,
-// 	})
-// )
+
+//https://quickpolls.vercel.app
+//http://localhost:3000
 
 app.use((req, res, next) => {
-	res.setHeader("Access-Control-Allow-Origin", "*")
+	res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app")
 	res.setHeader(
 		"Access-Control-Allow-Methods",
 		"GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"

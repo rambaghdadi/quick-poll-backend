@@ -58,6 +58,8 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                 numOfVotes = _a.sent();
                 if (!numOfVotes)
                     throw new Error("Choice not found.");
+                if (req.cookies[numOfVotes.question.id] === "true")
+                    throw new Error("You have already voted in this poll.");
                 if (numOfVotes.question.voters.includes(ip))
                     throw new Error("You have already voted in this poll.");
                 return [4 /*yield*/, prisma.pollOption.update({
@@ -81,7 +83,12 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                     })];
             case 2:
                 vote = _a.sent();
-                res.status(200).json({ data: vote });
+                res
+                    .status(200)
+                    .cookie(numOfVotes.question.id, true, {
+                    httpOnly: true,
+                })
+                    .json({ data: vote });
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();

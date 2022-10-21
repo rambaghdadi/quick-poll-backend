@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client"
 const router: Router = express.Router()
 const prisma = new PrismaClient({})
 
+// Get Poll
 router.get("/poll/:id", async (req: Request, res: Response) => {
 	try {
 		const pollId = req.params.id
@@ -15,6 +16,7 @@ router.get("/poll/:id", async (req: Request, res: Response) => {
 				options: true,
 			},
 		})
+		if (poll?.endsAt! < new Date()) throw new Error("Poll expired.")
 		if (!poll) throw new Error("Poll not found.")
 		res.status(200).json({ data: poll })
 	} catch (error) {
@@ -23,6 +25,7 @@ router.get("/poll/:id", async (req: Request, res: Response) => {
 	}
 })
 
+// Create New Poll
 router.post("/poll", async (req: Request, res: Response) => {
 	try {
 		const poll = await prisma.pollQuestion.create({
@@ -30,6 +33,7 @@ router.post("/poll", async (req: Request, res: Response) => {
 				question: req.body.question,
 				allowNewOptions: req.body.allowNewOptions,
 				optionLimit: req.body.optionLimit,
+				endsAt: req.body.endsAt,
 				options: {
 					create: req.body.options,
 				},
