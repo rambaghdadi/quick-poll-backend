@@ -28,6 +28,7 @@ router.get("/poll/:id", async (req: Request, res: Response) => {
 // Create New Poll
 router.post("/poll", async (req: Request, res: Response) => {
 	try {
+		console.log(req.body.endsAt)
 		const poll = await prisma.pollQuestion.create({
 			data: {
 				question: req.body.question,

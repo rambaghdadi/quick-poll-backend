@@ -78,6 +78,7 @@ router.post("/poll", function (req, res) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
+                console.log(req.body.endsAt);
                 return [4 /*yield*/, prisma.pollQuestion.create({
                         data: {
                             question: req.body.question,
