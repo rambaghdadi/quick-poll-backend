@@ -38,12 +38,14 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 var router = express.Router();
 var prisma = new PrismaClient({});
+// Add New Vote
 router.post("/option", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var ip, numOfVotes, vote, error_1, err;
+    var io, ip, numOfVotes, vote, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 3, , 4]);
+                io = req.app.get("socket.io");
                 ip = req.ips[0];
                 return [4 /*yield*/, prisma.pollOption.findFirst({
                         where: {
@@ -80,9 +82,19 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                                 },
                             },
                         },
+                        include: {
+                            question: {
+                                include: {
+                                    options: true,
+                                },
+                            },
+                        },
                     })];
             case 2:
                 vote = _a.sent();
+                io.emit("poll", {
+                    updatedPost: vote.question,
+                });
                 res
                     .status(200)
                     .cookie(numOfVotes.question.id, true, {

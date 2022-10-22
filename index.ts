@@ -1,14 +1,28 @@
 import "dotenv/config"
+
+import http from "http"
 import express, { Express } from "express"
+
 import cookieParser from "cookie-parser"
+import helmet from "helmet"
+
+import { Server } from "socket.io"
 
 import pollRoutes from "./routes/Poll.js"
 import optionRoutes from "./routes/Option.js"
-import helmet from "helmet"
 
-const app: Express = express()
 const port = process.env.PORT
+const app: Express = express()
+const server = http.createServer(app)
+const io = new Server(server, {
+	cors: {
+		origin: "https://quickpolls.vercel.app",
+		methods: ["GET", "POST", "DELETE", "PATCH", "PUT", "OPTIONS", "HEAD"],
+		credentials: true,
+	},
+})
 
+app.set("socket.io", io)
 app.set("trust proxy", true)
 app.use(express.json())
 app.use(cookieParser())
@@ -35,6 +49,6 @@ app.use(helmet())
 app.use("/api", pollRoutes)
 app.use("/api", optionRoutes)
 
-app.listen(port, () => {
-	console.log(`Server Running on port ${port}!`)
+server.listen(port, () => {
+	console.log(`Server Running on port ${port}.`)
 })

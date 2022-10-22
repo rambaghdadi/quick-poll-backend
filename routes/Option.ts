@@ -4,9 +4,10 @@ import { PrismaClient } from "@prisma/client"
 const router: Router = express.Router()
 const prisma = new PrismaClient({})
 
+// Add New Vote
 router.post("/option", async (req: Request, res: Response) => {
 	try {
-		// Add New Vote
+		const io = req.app.get("socket.io")
 		const ip = req.ips[0]
 		const numOfVotes = await prisma.pollOption.findFirst({
 			where: {
@@ -40,6 +41,16 @@ router.post("/option", async (req: Request, res: Response) => {
 					},
 				},
 			},
+			include: {
+				question: {
+					include: {
+						options: true,
+					},
+				},
+			},
+		})
+		io.emit("poll", {
+			updatedPost: vote.question,
 		})
 		res
 			.status(200)
