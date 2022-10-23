@@ -56,7 +56,7 @@ router.get("/poll/:id", function (req, res) { return __awaiter(void 0, void 0, v
                     })];
             case 1:
                 poll = _a.sent();
-                if ((poll === null || poll === void 0 ? void 0 : poll.endsAt) < new Date())
+                if ((poll === null || poll === void 0 ? void 0 : poll.endsAt.toLocaleDateString()) < new Date().toLocaleDateString())
                     throw new Error("Poll expired.");
                 if (!poll)
                     throw new Error("Poll not found.");

@@ -40,13 +40,12 @@ var router = express.Router();
 var prisma = new PrismaClient({});
 // Add New Vote
 router.post("/option", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var io, ip, numOfVotes, vote, error_1, err;
+    var io, numOfVotes, vote, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 3, , 4]);
                 io = req.app.get("socket.io");
-                ip = req.ips[0];
                 return [4 /*yield*/, prisma.pollOption.findFirst({
                         where: {
                             id: req.body.id,
@@ -62,22 +61,14 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                     throw new Error("Choice not found.");
                 if (req.cookies[numOfVotes.question.id] === "true")
                     throw new Error("You have already voted in this poll.");
-                if (numOfVotes.question.voters.includes(ip))
-                    throw new Error("You have already voted in this poll.");
                 return [4 /*yield*/, prisma.pollOption.update({
                         where: {
                             id: req.body.id,
                         },
                         data: {
                             vote: numOfVotes.vote + 1,
-                            voters: {
-                                push: [ip],
-                            },
                             question: {
                                 update: {
-                                    voters: {
-                                        push: [ip],
-                                    },
                                     totalVotes: numOfVotes.question.totalVotes + 1,
                                 },
                             },

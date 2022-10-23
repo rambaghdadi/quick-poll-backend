@@ -17,6 +17,7 @@ const server = http.createServer(app)
 const io = new Server(server, {
 	cors: {
 		origin: "https://quickpolls.vercel.app",
+		// origin: "http://localhost:3000",
 		methods: ["GET", "POST", "DELETE", "PATCH", "PUT", "OPTIONS", "HEAD"],
 		credentials: true,
 	},
@@ -27,11 +28,9 @@ app.set("trust proxy", true)
 app.use(express.json())
 app.use(cookieParser())
 
-//https://quickpolls.vercel.app
-//http://localhost:3000
-
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "https://quickpolls.vercel.app")
+	// res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000")
 	res.setHeader(
 		"Access-Control-Allow-Methods",
 		"GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"

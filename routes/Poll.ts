@@ -16,7 +16,8 @@ router.get("/poll/:id", async (req: Request, res: Response) => {
 				options: true,
 			},
 		})
-		if (poll?.endsAt! < new Date()) throw new Error("Poll expired.")
+		if (poll?.endsAt.toLocaleDateString()! < new Date().toLocaleDateString())
+			throw new Error("Poll expired.")
 		if (!poll) throw new Error("Poll not found.")
 		res.status(200).json({ data: poll })
 	} catch (error) {

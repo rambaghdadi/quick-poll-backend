@@ -8,7 +8,6 @@ const prisma = new PrismaClient({})
 router.post("/option", async (req: Request, res: Response) => {
 	try {
 		const io = req.app.get("socket.io")
-		const ip = req.ips[0]
 		const numOfVotes = await prisma.pollOption.findFirst({
 			where: {
 				id: req.body.id,
@@ -21,22 +20,14 @@ router.post("/option", async (req: Request, res: Response) => {
 		if (!numOfVotes) throw new Error("Choice not found.")
 		if (req.cookies[numOfVotes.question.id] === "true")
 			throw new Error("You have already voted in this poll.")
-		if (numOfVotes.question.voters.includes(ip))
-			throw new Error("You have already voted in this poll.")
 		const vote = await prisma.pollOption.update({
 			where: {
 				id: req.body.id,
 			},
 			data: {
 				vote: numOfVotes.vote + 1,
-				voters: {
-					push: [ip],
-				},
 				question: {
 					update: {
-						voters: {
-							push: [ip],
-						},
 						totalVotes: numOfVotes.question.totalVotes + 1,
 					},
 				},
