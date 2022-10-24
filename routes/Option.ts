@@ -45,7 +45,7 @@ router.post("/option", async (req: Request, res: Response) => {
 		})
 		res
 			.status(200)
-			.cookie(numOfVotes.question.id, true, {
+			.cookie(numOfVotes.question.id, "true", {
 				httpOnly: true,
 			})
 			.json({ data: vote })

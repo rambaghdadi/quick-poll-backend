@@ -88,7 +88,7 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                 });
                 res
                     .status(200)
-                    .cookie(numOfVotes.question.id, true, {
+                    .cookie(numOfVotes.question.id, "true", {
                     httpOnly: true,
                 })
                     .json({ data: vote });
