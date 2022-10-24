@@ -71,7 +71,7 @@ router.get("/poll/:id", function (req, res) { return __awaiter(void 0, void 0, v
         }
     });
 }); });
-// Create New Poll
+// Create new poll
 router.post("/poll", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var poll, error_2, err;
     return __generator(this, function (_a) {
