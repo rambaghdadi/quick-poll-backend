@@ -5,12 +5,12 @@ const router: Router = express.Router()
 const prisma = new PrismaClient({})
 
 // Add New Vote
-router.post("/option", async (req: Request, res: Response) => {
+router.post("/option/:optionId", async (req: Request, res: Response) => {
 	try {
 		const io = req.app.get("socket.io")
 		const numOfVotes = await prisma.pollOption.findFirst({
 			where: {
-				id: req.body.id,
+				id: req.params.optionId,
 			},
 			select: {
 				vote: true,
@@ -18,11 +18,9 @@ router.post("/option", async (req: Request, res: Response) => {
 			},
 		})
 		if (!numOfVotes) throw new Error("Choice not found.")
-		if (req.cookies[numOfVotes.question.id] === "true")
-			throw new Error("You have already voted in this poll.")
 		const vote = await prisma.pollOption.update({
 			where: {
-				id: req.body.id,
+				id: req.params.optionId,
 			},
 			data: {
 				vote: numOfVotes.vote + 1,
@@ -40,15 +38,10 @@ router.post("/option", async (req: Request, res: Response) => {
 				},
 			},
 		})
-		io.emit("poll", {
+		io.emit(req.body.pollId + "poll", {
 			updatedPost: vote.question,
 		})
-		res
-			.status(200)
-			.cookie(numOfVotes.question.id, "true", {
-				httpOnly: true,
-			})
-			.json({ data: vote })
+		res.status(200).json({ data: vote })
 	} catch (error) {
 		let err = error as Error
 		res.status(400).json({ error: err.message })

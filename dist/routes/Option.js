@@ -39,7 +39,7 @@ import { PrismaClient } from "@prisma/client";
 var router = express.Router();
 var prisma = new PrismaClient({});
 // Add New Vote
-router.post("/option", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.post("/option/:optionId", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var io, numOfVotes, vote, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -48,7 +48,7 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                 io = req.app.get("socket.io");
                 return [4 /*yield*/, prisma.pollOption.findFirst({
                         where: {
-                            id: req.body.id,
+                            id: req.params.optionId,
                         },
                         select: {
                             vote: true,
@@ -59,11 +59,9 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                 numOfVotes = _a.sent();
                 if (!numOfVotes)
                     throw new Error("Choice not found.");
-                if (req.cookies[numOfVotes.question.id] === "true")
-                    throw new Error("You have already voted in this poll.");
                 return [4 /*yield*/, prisma.pollOption.update({
                         where: {
-                            id: req.body.id,
+                            id: req.params.optionId,
                         },
                         data: {
                             vote: numOfVotes.vote + 1,
@@ -83,15 +81,10 @@ router.post("/option", function (req, res) { return __awaiter(void 0, void 0, vo
                     })];
             case 2:
                 vote = _a.sent();
-                io.emit("poll", {
+                io.emit(req.body.pollId + "poll", {
                     updatedPost: vote.question,
                 });
-                res
-                    .status(200)
-                    .cookie(numOfVotes.question.id, "true", {
-                    httpOnly: true,
-                })
-                    .json({ data: vote });
+                res.status(200).json({ data: vote });
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
