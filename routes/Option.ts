@@ -13,8 +13,9 @@ router.post("/option/:optionId", async (req: Request, res: Response) => {
 	let decodedToken: any
 
 	try {
-		const token = req.cookies.userToken
-		if (token) {
+		const authHeader = req.get("Authorization")
+		if (authHeader) {
+			const token = authHeader.split(" ")[1]
 			decodedToken = jwt.verify(token, process.env.SECRET)
 			if (decodedToken) {
 				signedInUser = decodedToken.userId

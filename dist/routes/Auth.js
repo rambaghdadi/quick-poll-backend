@@ -64,17 +64,10 @@ router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, vo
                     email: user.email,
                     userId: user.id,
                 }, process.env.SECRET, { expiresIn: "48h" });
-                res
-                    .cookie("userToken", token, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "none",
-                    expires: new Date(Date.now() + 2 * 24 * 3600 * 1000),
-                    path: "/",
-                    domain: "https://quickpolls-backend.onrender.com",
-                })
-                    .status(200)
-                    .json({ data: { userId: user.id, email: user.email, name: user.name } });
+                res.status(200).json({
+                    data: { userId: user.id, email: user.email, name: user.name },
+                    token: token,
+                });
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
@@ -123,19 +116,15 @@ router.post("/signup", function (req, res) { return __awaiter(void 0, void 0, vo
         }
     });
 }); });
-router.get("/signout", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        try {
-            if (!req.cookies.userToken) {
-                res.status(200).json({ message: "No cookies in request." });
-                return [2 /*return*/];
-            }
-            res.status(200).clearCookie("userToken").json({ message: "User cleared." });
-        }
-        catch (error) {
-            res.status(400).json({ message: "Please try again later." });
-        }
-        return [2 /*return*/];
-    });
-}); });
+// router.get("/signout", async (req: Request, res: Response) => {
+// 	try {
+// 		if (!req.cookies.userToken) {
+// 			res.status(200).json({ message: "No cookies in request." })
+// 			return
+// 		}
+// 		res.status(200).clearCookie("userToken").json({ message: "User cleared." })
+// 	} catch (error) {
+// 		res.status(400).json({ message: "Please try again later." })
+// 	}
+// })
 export default router;

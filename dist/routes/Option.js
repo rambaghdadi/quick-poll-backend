@@ -41,7 +41,7 @@ var router = express.Router();
 var prisma = new PrismaClient({});
 // Add New Vote
 router.post("/option/:optionId", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var io, signedInUser, decodedToken, token, option, vote_1, vote, error_1, err;
+    var io, signedInUser, decodedToken, authHeader, token, option, vote_1, vote, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -50,8 +50,9 @@ router.post("/option/:optionId", function (req, res) { return __awaiter(void 0, 
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 6, , 7]);
-                token = req.cookies.userToken;
-                if (token) {
+                authHeader = req.get("Authorization");
+                if (authHeader) {
+                    token = authHeader.split(" ")[1];
                     decodedToken = jwt.verify(token, process.env.SECRET);
                     if (decodedToken) {
                         signedInUser = decodedToken.userId;

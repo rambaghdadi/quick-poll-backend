@@ -6,11 +6,13 @@ export default function token(req: any, res: any, next: any) {
 	let secret = process.env.SECRET
 
 	try {
-		const token = req.cookies.userToken
-		if (!token) {
+		const authHeader = req.get("Authorization")
+		if (!authHeader) {
 			errorStatus = 401
 			throw new Error("Not Authenticated")
 		}
+
+		const token = authHeader.split(" ")[1]
 		decodedToken = jwt.verify(token, secret)
 		if (!decodedToken) {
 			errorStatus = 401

@@ -4,11 +4,12 @@ export default function token(req, res, next) {
     var decodedToken;
     var secret = process.env.SECRET;
     try {
-        var token_1 = req.cookies.userToken;
-        if (!token_1) {
+        var authHeader = req.get("Authorization");
+        if (!authHeader) {
             errorStatus = 401;
             throw new Error("Not Authenticated");
         }
+        var token_1 = authHeader.split(" ")[1];
         decodedToken = jwt.verify(token_1, secret);
         if (!decodedToken) {
             errorStatus = 401;

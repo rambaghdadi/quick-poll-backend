@@ -27,17 +27,10 @@ router.post("/signin", async (req: Request, res: Response) => {
 			process.env.SECRET,
 			{ expiresIn: "48h" }
 		)
-		res
-			.cookie("userToken", token, {
-				httpOnly: true,
-				secure: true,
-				sameSite: "none",
-				expires: new Date(Date.now() + 2 * 24 * 3600 * 1000),
-				path: "/",
-				domain: "https://quickpolls-backend.onrender.com",
-			})
-			.status(200)
-			.json({ data: { userId: user.id, email: user.email, name: user.name } })
+		res.status(200).json({
+			data: { userId: user.id, email: user.email, name: user.name },
+			token: token,
+		})
 	} catch (error) {
 		const err = error as Error
 		res.status(400).json({ message: err.message })
@@ -67,16 +60,16 @@ router.post("/signup", async (req: Request, res: Response) => {
 	}
 })
 
-router.get("/signout", async (req: Request, res: Response) => {
-	try {
-		if (!req.cookies.userToken) {
-			res.status(200).json({ message: "No cookies in request." })
-			return
-		}
-		res.status(200).clearCookie("userToken").json({ message: "User cleared." })
-	} catch (error) {
-		res.status(400).json({ message: "Please try again later." })
-	}
-})
+// router.get("/signout", async (req: Request, res: Response) => {
+// 	try {
+// 		if (!req.cookies.userToken) {
+// 			res.status(200).json({ message: "No cookies in request." })
+// 			return
+// 		}
+// 		res.status(200).clearCookie("userToken").json({ message: "User cleared." })
+// 	} catch (error) {
+// 		res.status(400).json({ message: "Please try again later." })
+// 	}
+// })
 
 export default router
