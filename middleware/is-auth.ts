@@ -6,7 +6,7 @@ export default function token(req: any, res: any, next: any) {
 	let secret = process.env.SECRET
 
 	try {
-		const token = req.cookies.token
+		const token = req.cookies.userToken
 		if (!token) {
 			errorStatus = 401
 			throw new Error("Not Authenticated")

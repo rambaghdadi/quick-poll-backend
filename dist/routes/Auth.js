@@ -123,11 +123,11 @@ router.post("/signup", function (req, res) { return __awaiter(void 0, void 0, vo
 router.get("/signout", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         try {
-            if (!req.cookies.token) {
+            if (!req.cookies.userToken) {
                 res.status(200).json({ message: "No cookies in request." });
                 return [2 /*return*/];
             }
-            res.status(200).clearCookie("token").json({ message: "User cleared." });
+            res.status(200).clearCookie("userToken").json({ message: "User cleared." });
         }
         catch (error) {
             res.status(400).json({ message: "Please try again later." });

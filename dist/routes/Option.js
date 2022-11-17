@@ -50,7 +50,7 @@ router.post("/option/:optionId", function (req, res) { return __awaiter(void 0, 
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 6, , 7]);
-                token = req.cookies.token;
+                token = req.cookies.userToken;
                 if (token) {
                     decodedToken = jwt.verify(token, process.env.SECRET);
                     if (decodedToken) {

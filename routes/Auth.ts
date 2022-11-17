@@ -66,11 +66,11 @@ router.post("/signup", async (req: Request, res: Response) => {
 
 router.get("/signout", async (req: Request, res: Response) => {
 	try {
-		if (!req.cookies.token) {
+		if (!req.cookies.userToken) {
 			res.status(200).json({ message: "No cookies in request." })
 			return
 		}
-		res.status(200).clearCookie("token").json({ message: "User cleared." })
+		res.status(200).clearCookie("userToken").json({ message: "User cleared." })
 	} catch (error) {
 		res.status(400).json({ message: "Please try again later." })
 	}

@@ -13,7 +13,7 @@ router.post("/option/:optionId", async (req: Request, res: Response) => {
 	let decodedToken: any
 
 	try {
-		const token = req.cookies.token
+		const token = req.cookies.userToken
 		if (token) {
 			decodedToken = jwt.verify(token, process.env.SECRET)
 			if (decodedToken) {
