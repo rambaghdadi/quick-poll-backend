@@ -30,8 +30,8 @@ router.post("/signin", async (req: Request, res: Response) => {
 		res
 			.cookie("token", token, {
 				httpOnly: true,
-				secure: true,
-				sameSite: "none",
+				secure: process.env.ENV === "prod",
+				// sameSite: process.env.ENV === "prod" ? "none" : "lax",
 			})
 			.status(200)
 			.json({ data: { userId: user.id, email: user.email, name: user.name } })
