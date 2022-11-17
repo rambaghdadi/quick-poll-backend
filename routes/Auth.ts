@@ -32,6 +32,8 @@ router.post("/signin", async (req: Request, res: Response) => {
 				httpOnly: true,
 				secure: true,
 				sameSite: "none",
+				path: "/",
+				domain: "https://quickpolls-backend.onrender.com",
 			})
 			.status(200)
 			.json({ data: { userId: user.id, email: user.email, name: user.name } })

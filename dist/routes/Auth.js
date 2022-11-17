@@ -69,6 +69,8 @@ router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, vo
                     httpOnly: true,
                     secure: true,
                     sameSite: "none",
+                    path: "/",
+                    domain: "https://quickpolls-backend.onrender.com",
                 })
                     .status(200)
                     .json({ data: { userId: user.id, email: user.email, name: user.name } });
