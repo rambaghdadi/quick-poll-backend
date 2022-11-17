@@ -25,13 +25,14 @@ router.post("/signin", async (req: Request, res: Response) => {
 				userId: user.id,
 			},
 			process.env.SECRET,
-			{ expiresIn: "24h" }
+			{ expiresIn: "48h" }
 		)
 		res
 			.cookie("userToken", token, {
 				httpOnly: true,
 				secure: true,
 				sameSite: "none",
+				expires: new Date(Date.now() + 2 * 24 * 3600 * 1000),
 				path: "/",
 				domain: "https://quickpolls-backend.onrender.com",
 			})

@@ -63,12 +63,13 @@ router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, vo
                 token = jwt.sign({
                     email: user.email,
                     userId: user.id,
-                }, process.env.SECRET, { expiresIn: "24h" });
+                }, process.env.SECRET, { expiresIn: "48h" });
                 res
                     .cookie("userToken", token, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "none",
+                    expires: new Date(Date.now() + 2 * 24 * 3600 * 1000),
                     path: "/",
                     domain: "https://quickpolls-backend.onrender.com",
                 })
