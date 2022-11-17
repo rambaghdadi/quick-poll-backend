@@ -36,38 +36,56 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
 var router = express.Router();
 var prisma = new PrismaClient({});
 // Add New Vote
 router.post("/option/:optionId", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var io, numOfVotes, vote, error_1, err;
+    var io, signedInUser, decodedToken, token, option, vote_1, vote, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 3, , 4]);
                 io = req.app.get("socket.io");
+                signedInUser = null;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 6, , 7]);
+                token = req.cookies.token;
+                if (token) {
+                    decodedToken = jwt.verify(token, process.env.SECRET);
+                    if (decodedToken) {
+                        signedInUser = decodedToken.userId;
+                    }
+                }
                 return [4 /*yield*/, prisma.pollOption.findFirst({
                         where: {
                             id: req.params.optionId,
                         },
-                        select: {
-                            vote: true,
+                        include: {
                             question: true,
                         },
                     })];
-            case 1:
-                numOfVotes = _a.sent();
-                if (!numOfVotes)
+            case 2:
+                option = _a.sent();
+                if (!option)
                     throw new Error("Choice not found.");
+                if (!(option === null || option === void 0 ? void 0 : option.question.secure)) return [3 /*break*/, 4];
+                if (!signedInUser)
+                    throw new Error("You need to be signed in to vote.");
+                if (option.question.signedInVoters.includes(signedInUser))
+                    throw new Error("You have already voted in this poll.");
                 return [4 /*yield*/, prisma.pollOption.update({
                         where: {
                             id: req.params.optionId,
                         },
                         data: {
-                            vote: numOfVotes.vote + 1,
+                            vote: option.vote + 1,
                             question: {
                                 update: {
-                                    totalVotes: numOfVotes.question.totalVotes + 1,
+                                    totalVotes: option.question.totalVotes + 1,
+                                    signedInVoters: {
+                                        push: signedInUser,
+                                    },
                                 },
                             },
                         },
@@ -79,19 +97,46 @@ router.post("/option/:optionId", function (req, res) { return __awaiter(void 0, 
                             },
                         },
                     })];
-            case 2:
+            case 3:
+                vote_1 = _a.sent();
+                io.emit(req.body.pollId + "poll", {
+                    updatedPost: vote_1.question,
+                });
+                res.status(200).json({ data: vote_1 });
+                return [2 /*return*/];
+            case 4: return [4 /*yield*/, prisma.pollOption.update({
+                    where: {
+                        id: req.params.optionId,
+                    },
+                    data: {
+                        vote: option.vote + 1,
+                        question: {
+                            update: {
+                                totalVotes: option.question.totalVotes + 1,
+                            },
+                        },
+                    },
+                    include: {
+                        question: {
+                            include: {
+                                options: true,
+                            },
+                        },
+                    },
+                })];
+            case 5:
                 vote = _a.sent();
                 io.emit(req.body.pollId + "poll", {
                     updatedPost: vote.question,
                 });
                 res.status(200).json({ data: vote });
-                return [3 /*break*/, 4];
-            case 3:
+                return [3 /*break*/, 7];
+            case 6:
                 error_1 = _a.sent();
                 err = error_1;
                 res.status(400).json({ error: err.message });
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); });

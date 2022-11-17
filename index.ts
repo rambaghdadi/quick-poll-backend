@@ -10,6 +10,7 @@ import { Server } from "socket.io"
 
 import pollRoutes from "./routes/Poll.js"
 import optionRoutes from "./routes/Option.js"
+import authRoutes from "./routes/Auth.js"
 
 const port = process.env.PORT
 const app: Express = express()
@@ -47,7 +48,11 @@ app.use(helmet())
 
 app.use("/api", pollRoutes)
 app.use("/api", optionRoutes)
+app.use("/api", authRoutes)
 
 server.listen(port, () => {
 	console.log(`Server Running on port ${port}.`)
 })
+
+//backend validation
+//add password

@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { Server } from "socket.io";
 import pollRoutes from "./routes/Poll.js";
 import optionRoutes from "./routes/Option.js";
+import authRoutes from "./routes/Auth.js";
 var port = process.env.PORT;
 var app = express();
 var server = http.createServer(app);
@@ -32,6 +33,9 @@ app.use(function (req, res, next) {
 app.use(helmet());
 app.use("/api", pollRoutes);
 app.use("/api", optionRoutes);
+app.use("/api", authRoutes);
 server.listen(port, function () {
     console.log("Server Running on port ".concat(port, "."));
 });
+//backend validation
+//add password

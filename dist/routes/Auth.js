@@ -35,106 +35,100 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import isAuth from "../middleware/is-auth.js";
-var router = express.Router();
 var prisma = new PrismaClient({});
-// Get Poll
-router.get("/poll/:id", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var pollId, poll, error_1, err;
+var router = express.Router();
+router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, passwordEncryption, token, error_1, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                pollId = req.params.id;
-                return [4 /*yield*/, prisma.pollQuestion.findFirst({
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, prisma.user.findUnique({
                         where: {
-                            id: pollId,
-                        },
-                        include: {
-                            options: true,
+                            email: req.body.email,
                         },
                     })];
             case 1:
-                poll = _a.sent();
-                if ((poll === null || poll === void 0 ? void 0 : poll.endsAt.toLocaleDateString()) < new Date().toLocaleDateString())
-                    throw new Error("Poll expired.");
-                if (!poll)
-                    throw new Error("Poll not found.");
-                res.status(200).json({ data: poll });
-                return [3 /*break*/, 3];
+                user = _a.sent();
+                if (!user)
+                    throw new Error("User does not exist.");
+                return [4 /*yield*/, bcrypt.compare(req.body.password, user.password)];
             case 2:
+                passwordEncryption = _a.sent();
+                if (!passwordEncryption)
+                    throw new Error("Wrong password entered.");
+                token = jwt.sign({
+                    email: user.email,
+                    userId: user.id,
+                }, process.env.SECRET, { expiresIn: "24h" });
+                res
+                    .cookie("token", token, { httpOnly: true })
+                    .status(200)
+                    .json({ data: { userId: user.id, email: user.email, name: user.name } });
+                return [3 /*break*/, 4];
+            case 3:
                 error_1 = _a.sent();
                 err = error_1;
-                res.status(400).json({ error: err.message });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                res.status(400).json({ message: err.message });
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
-// Get all user polls
-router.get("/user/polls", isAuth, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var poll, error_2, err;
+router.post("/signup", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, hashedPassword, newUser, error_2, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, prisma.pollQuestion.findMany({
+                _a.trys.push([0, 4, , 5]);
+                return [4 /*yield*/, prisma.user.findUnique({
                         where: {
-                            userId: req.body.userId,
-                        },
-                        include: {
-                            options: true,
+                            email: req.body.email,
                         },
                     })];
             case 1:
-                poll = _a.sent();
-                res.status(200).json({ data: poll });
-                return [3 /*break*/, 3];
+                user = _a.sent();
+                if (user)
+                    throw new Error("User already exists.");
+                return [4 /*yield*/, bcrypt.hash(req.body.password, 12)];
             case 2:
+                hashedPassword = _a.sent();
+                return [4 /*yield*/, prisma.user.create({
+                        data: {
+                            email: req.body.email,
+                            password: hashedPassword,
+                            name: req.body.name,
+                        },
+                    })];
+            case 3:
+                newUser = _a.sent();
+                res.status(200).json({ message: "User created.", data: newUser });
+                return [3 /*break*/, 5];
+            case 4:
                 error_2 = _a.sent();
                 err = error_2;
                 res.status(400).json({ message: err.message });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/];
         }
     });
 }); });
-// Create new poll
-router.post("/poll", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var poll, error_3, err;
+router.get("/signout", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 2, , 3]);
-                if (req.body.question.length > 150)
-                    throw new Error("Only 150 characters are allowed.");
-                if (req.body.question.length <= 1)
-                    throw new Error("More than 2 characters are required.");
-                return [4 /*yield*/, prisma.pollQuestion.create({
-                        data: {
-                            question: req.body.question,
-                            secure: req.body.secure,
-                            allowNewOptions: req.body.allowNewOptions,
-                            optionLimit: req.body.optionLimit,
-                            endsAt: req.body.endsAt,
-                            options: {
-                                create: req.body.options,
-                            },
-                            userId: req.body.userId,
-                        },
-                    })];
-            case 1:
-                poll = _a.sent();
-                res.status(200).json({ data: poll });
-                return [3 /*break*/, 3];
-            case 2:
-                error_3 = _a.sent();
-                err = error_3;
-                res.status(400).json({ error: err.message });
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+        try {
+            if (!req.cookies.token) {
+                res.status(200).json({ message: "No cookies in request." });
+                return [2 /*return*/];
+            }
+            res.status(200).clearCookie("token").json({ message: "User cleared." });
         }
+        catch (error) {
+            res.status(400).json({ message: "Please try again later." });
+        }
+        return [2 /*return*/];
     });
 }); });
 export default router;
