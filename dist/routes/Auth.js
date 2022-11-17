@@ -65,7 +65,11 @@ router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, vo
                     userId: user.id,
                 }, process.env.SECRET, { expiresIn: "24h" });
                 res
-                    .cookie("token", token, { httpOnly: true })
+                    .cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none",
+                })
                     .status(200)
                     .json({ data: { userId: user.id, email: user.email, name: user.name } });
                 return [3 /*break*/, 4];

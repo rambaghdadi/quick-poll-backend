@@ -28,7 +28,11 @@ router.post("/signin", async (req: Request, res: Response) => {
 			{ expiresIn: "24h" }
 		)
 		res
-			.cookie("token", token, { httpOnly: true })
+			.cookie("token", token, {
+				httpOnly: true,
+				secure: true,
+				sameSite: "none",
+			})
 			.status(200)
 			.json({ data: { userId: user.id, email: user.email, name: user.name } })
 	} catch (error) {
