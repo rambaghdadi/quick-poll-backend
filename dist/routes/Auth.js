@@ -67,8 +67,8 @@ router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, vo
                 res
                     .cookie("token", token, {
                     httpOnly: true,
-                    secure: process.env.ENV === "prod",
-                    sameSite: process.env.ENV === "prod" ? "none" : "lax",
+                    secure: true,
+                    sameSite: "none",
                 })
                     .status(200)
                     .json({ data: { userId: user.id, email: user.email, name: user.name } });
