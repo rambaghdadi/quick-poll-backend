@@ -65,7 +65,7 @@ router.post("/signin", function (req, res) { return __awaiter(void 0, void 0, vo
                     userId: user.id,
                 }, process.env.SECRET, { expiresIn: "24h" });
                 res
-                    .cookie("token", token, {
+                    .cookie("userToken", token, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "none",
